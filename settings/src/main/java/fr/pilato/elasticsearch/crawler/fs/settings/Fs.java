@@ -32,6 +32,7 @@ public class Fs {
     private TimeValue updateRate = TimeValue.timeValueMinutes(15);
     private List<String> includes = null;
     private List<String> excludes = null;
+    private List<String> allowedFolders = null;
     private boolean jsonSupport = false;
     private boolean filenameAsId = false;
     private boolean addFilesize = true;
@@ -63,6 +64,7 @@ public class Fs {
         private TimeValue updateRate = TimeValue.timeValueMinutes(15);
         private List<String> includes = null;
         private List<String> excludes = null;
+        private List<String> allowedFolders = null;
         private boolean jsonSupport = false;
         private boolean filenameAsId = false;
         private boolean addFilesize = true;
@@ -122,6 +124,24 @@ public class Fs {
             // We refuse to add duplicates
             if (!this.excludes.contains(exclude)) {
                 this.excludes.add(exclude);
+            }
+
+            return this;
+        }
+
+        public Builder setAllowedFolders(List<String> allowedFolders) {
+            this.allowedFolders = allowedFolders;
+            return this;
+        }
+
+        public Builder addAllowedFolder(String allowedFolder) {
+            if (this.allowedFolders == null) {
+                this.allowedFolders = new ArrayList<>();
+            }
+
+            // We refuse to add duplicates
+            if (!this.allowedFolders.contains(allowedFolder)) {
+                this.allowedFolders.add(allowedFolder);
             }
 
             return this;
@@ -215,7 +235,7 @@ public class Fs {
         public Fs build() {
             return new Fs(url, updateRate, includes, excludes, jsonSupport, filenameAsId, addFilesize,
                     removeDeleted, addAsInnerObject, storeSource, indexedChars, indexContent, attributesSupport, rawMetadata,
-                    checksum, xmlSupport, indexFolders, langDetect, continueOnError, pdfOcr, ocr);
+                    checksum, xmlSupport, indexFolders, langDetect, continueOnError, pdfOcr, ocr, allowedFolders);
         }
     }
 
@@ -226,9 +246,10 @@ public class Fs {
     private Fs(String url, TimeValue updateRate, List<String> includes, List<String> excludes, boolean jsonSupport,
                boolean filenameAsId, boolean addFilesize, boolean removeDeleted, boolean addAsInnerObject, boolean storeSource,
                Percentage indexedChars, boolean indexContent, boolean attributesSupport, boolean rawMetadata, String checksum, boolean xmlSupport,
-               boolean indexFolders, boolean langDetect, boolean continueOnError, boolean pdfOcr, Ocr ocr) {
+               boolean indexFolders, boolean langDetect, boolean continueOnError, boolean pdfOcr, Ocr ocr, List<string> allowedFolders) {
         this.url = url;
         this.updateRate = updateRate;
+        this.allowedFolders = allowedFolders;
         this.includes = includes;
         this.excludes = excludes;
         this.jsonSupport = jsonSupport;
@@ -264,6 +285,14 @@ public class Fs {
 
     public void setUpdateRate(TimeValue updateRate) {
         this.updateRate = updateRate;
+    }
+
+    public List<String> getAllowedFolders() {
+        return allowedFolders;
+    }
+
+    public void setAllowedFolders(List<String> allowedFolders) {
+        this.allowedFolders = allowedFolders;
     }
 
     public List<String> getIncludes() {
@@ -443,6 +472,7 @@ public class Fs {
         if (updateRate != null ? !updateRate.equals(fs.updateRate) : fs.updateRate != null) return false;
         if (includes != null ? !includes.equals(fs.includes) : fs.includes != null) return false;
         if (excludes != null ? !excludes.equals(fs.excludes) : fs.excludes != null) return false;
+        if (allowedFolders != null ? !allowedFolders.equals(fs.allowedFolders) : fs.allowedFolders != null) return false;
         if (indexedChars != null ? !indexedChars.equals(fs.indexedChars) : fs.indexedChars != null) return false;
         return checksum != null ? checksum.equals(fs.checksum) : fs.checksum == null;
 
@@ -454,6 +484,7 @@ public class Fs {
         result = 31 * result + (updateRate != null ? updateRate.hashCode() : 0);
         result = 31 * result + (includes != null ? includes.hashCode() : 0);
         result = 31 * result + (excludes != null ? excludes.hashCode() : 0);
+        result = 31 * result + (allowedFolders != null ? allowedFolders.hashCode() : 0);
         result = 31 * result + (jsonSupport ? 1 : 0);
         result = 31 * result + (filenameAsId ? 1 : 0);
         result = 31 * result + (addFilesize ? 1 : 0);

@@ -64,6 +64,7 @@ import java.util.stream.Collectors;
 import static fr.pilato.elasticsearch.crawler.fs.framework.FsCrawlerUtil.computeVirtualPathName;
 import static fr.pilato.elasticsearch.crawler.fs.framework.FsCrawlerUtil.isExcluded;
 import static fr.pilato.elasticsearch.crawler.fs.framework.FsCrawlerUtil.isIndexable;
+import static fr.pilato.elasticsearch.crawler.fs.framework.FsCrawlerUtil.isInAllowedFolder;
 import static fr.pilato.elasticsearch.crawler.fs.framework.FsCrawlerUtil.localDateTimeToDate;
 import static fr.pilato.elasticsearch.crawler.fs.tika.TikaDocParser.generate;
 
@@ -247,6 +248,15 @@ public abstract class FsParser implements Runnable {
                 // We need to go in it unless it has been explicitly excluded by the user
                 if (child.directory && !isExcluded(filename, fsSettings.getFs().getExcludes())) {
                     isIndexable = true;
+                }
+
+                if (isIndexable)
+                {
+                    boolean isInAllowedFolder = isInAllowedFolder(filepath, fsSettings.getFs().getAllowedFolders());
+                    if (!isInAllowedFolder){
+                        isIndexable = false;
+                        logger.debug("[{}] path can't be indexed beacuse it's not respecting the allowed folders requirement: [{}]", filepath, isIndexable);        
+                    }
                 }
 
                 logger.debug("[{}] can be indexed: [{}]", filename, isIndexable);

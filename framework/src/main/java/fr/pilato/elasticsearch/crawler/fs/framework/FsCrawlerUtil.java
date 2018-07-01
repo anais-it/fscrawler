@@ -119,6 +119,22 @@ public class FsCrawlerUtil {
     }
 
     /**
+    * This is used to see if the file is contained in the allowed folders
+    */
+    public static boolean isInAllowedFolder(String filePath, List<String> folders) {
+        logger.debug("filePath = [{}], folders = [{}]", filePath, folders);
+
+        for (String folder : folders) {
+            if (filename.toLowerCase().contains(folder.toLowerCase())) {
+                logger.trace("allowed folder is included in filepath");
+                return true;
+            }
+        }
+        logger.trace("file path doesn't contain any allowed folder");
+        return false;
+    }
+
+    /**
      * We check if we can index the file or if we should ignore it
      *
      * @param filename The filename to scan
