@@ -122,7 +122,7 @@ public class FsCrawlerUtil {
     * This is used to see if the file is contained in the allowed folders
     */
     public static boolean isInAllowedFolder(String filePath, List<String> folders) {
-        logger.debug("filePath = [{}], folders = [{}]", filePath, folders);
+        logger.debug("EXECUTING isInAllowedFolder filePath = [{}], folders = [{}]", filePath, folders);
 
         if (folders == null)
         {
