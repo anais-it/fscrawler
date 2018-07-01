@@ -124,9 +124,13 @@ public class FsCrawlerUtil {
     public static boolean isInAllowedFolder(String filePath, List<String> folders) {
         logger.debug("filePath = [{}], folders = [{}]", filePath, folders);
 
-        if (folders.length == 0)
+        if (folders == null)
         {
-            logger.trace("file path doesn't exist so we can skip this filter");    
+            logger.trace("isInAllowedFolder: no folders filter passed");    
+            return true;
+        }
+        else if (folders == null){
+            logger.trace("isInAllowedFolder: no folders filter passed (0 length)");    
             return true;
         }
         for (String folder : folders) {
