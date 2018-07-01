@@ -125,7 +125,7 @@ public class FsCrawlerUtil {
         logger.debug("filePath = [{}], folders = [{}]", filePath, folders);
 
         for (String folder : folders) {
-            if (filename.toLowerCase().contains(folder.toLowerCase())) {
+            if (filePath.toLowerCase().contains(folder.toLowerCase())) {
                 logger.trace("allowed folder is included in filepath");
                 return true;
             }
