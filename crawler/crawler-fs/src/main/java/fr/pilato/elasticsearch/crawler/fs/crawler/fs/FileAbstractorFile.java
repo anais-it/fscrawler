@@ -74,10 +74,17 @@ public class FileAbstractorFile extends FileAbstractor<File> {
     public Collection<FileAbstractModel> getFiles(String dir) {
         try{
         Path link = Paths.get(dir);
+        logger.debug("LInk above isSymbolic check");
+        logger.debug(link);
         if (Files.isSymbolicLink(link)) {
             link = Files.readSymbolicLink(link);
              logger.debug("[{}] is a Symlink", dir);
              logger.debug(link);
+
+            File directory = new File(dir).getCanonicalFile();;
+            File[] testFiles = directory.listFiles();
+            logger.debug("After getting the canonical files");
+            logger.debug(testFiles);
         }
         else{
             logger.debug("[{}] is NOT a Symlink", dir);
