@@ -77,6 +77,7 @@ public class FileAbstractorFile extends FileAbstractor<File> {
         if (Files.isSymbolicLink(link)) {
             link = Files.readSymbolicLink(link);
              logger.debug("[{}] is a Symlink", dir);
+             logger.debug(link);
         }
         else{
             logger.debug("[{}] is NOT a Symlink", dir);
