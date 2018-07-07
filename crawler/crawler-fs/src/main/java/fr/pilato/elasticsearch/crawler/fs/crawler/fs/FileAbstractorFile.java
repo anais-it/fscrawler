@@ -26,6 +26,10 @@ import fr.pilato.elasticsearch.crawler.fs.settings.FsSettings;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -68,16 +72,30 @@ public class FileAbstractorFile extends FileAbstractor<File> {
 
     @Override
     public Collection<FileAbstractModel> getFiles(String dir) {
-        logger.debug("Listing symlinks files from {}", dir);
-        File symlinkFolder = new File(dir).getCanonicalFile();
-        File[] files = symlinkFolder.listFiles();
-        Collection<FileAbstractModel> result;
+        try{
+        Path link = Paths.get(dir);
+        if (Files.isSymbolicLink(link)) {
+            link = Files.readSymbolicLink(link);
+             logger.debug("[{}] is a Symlink", dir);
+        }
+        else{
+            logger.debug("[{}] is NOT a Symlink", dir);
+        }
 
-        if (files != null) {
-            result = new ArrayList<>(files.length);
+        Path[] filePaths =  Files.list(link).toArray(size -> new Path[size]);
+        List<File> files = new ArrayList<File>();
+        for (Path filePath : filePaths) {
+            files.add(filePath.toFile());
+        }
+
+        Collection<FileAbstractModel> result;
+        logger.debug("GET FILES found files: [{}]", files);
+        if (files.size() > 0) {
+            result = new ArrayList<>(files.size());
 
             // Iterate other files
             for (File file : files) {
+                logger.debug("GET FILES INDIVIDUAL FILE: [{}]", file);
                 result.add(toFileAbstractModel(dir, file));
             }
         } else {
@@ -88,6 +106,11 @@ public class FileAbstractorFile extends FileAbstractor<File> {
 
         logger.debug("{} local files found", result.size());
         return result;
+        }
+        catch(Exception ex){
+            logger.debug("GET FILES ERROR: {}", ex);
+        }
+        return null;
     }
 
     @Override
