@@ -68,8 +68,9 @@ public class FileAbstractorFile extends FileAbstractor<File> {
 
     @Override
     public Collection<FileAbstractModel> getFiles(String dir) {
-        logger.debug("Listing local files from {}", dir);
-        File[] files = new File(dir).listFiles();
+        logger.debug("Listing symlinks files from {}", dir);
+        File symlinkFolder = new File(dir).getCanonicalFile();
+        File[] files = symlinkFolder.listFiles();
         Collection<FileAbstractModel> result;
 
         if (files != null) {
