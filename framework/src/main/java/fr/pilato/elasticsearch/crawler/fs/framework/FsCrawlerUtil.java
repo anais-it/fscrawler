@@ -136,6 +136,10 @@ public class FsCrawlerUtil {
         if (rootFolder != null){
             cleanedPath = filePath.replace(rootFolder.toLowerCase(),"");
             logger.trace("IS IN ALLOWED FOLDER: cleaned path = {}", cleanedPath);
+            if(cleanedPath.length() == 0)
+            {
+                return true;
+            }
         }
 
         boolean pathContainsAlloweBaseFolder = false;
