@@ -252,7 +252,7 @@ public abstract class FsParser implements Runnable {
 
                 if (isIndexable)
                 {
-                    boolean isInAllowedFolder = isInAllowedFolder(filepath, fsSettings.getFs().getAllowedFolders());
+                    boolean isInAllowedFolder = isInAllowedFolder(filepath, fsSettings.getFs().getAllowedRootFolder(), fsSettings.getFs().getAllowedBaseFolders(), fsSettings.getFs().getAllowedSubFolders());
                     if (!isInAllowedFolder){
                         isIndexable = false;
                         logger.debug("[{}] path can't be indexed beacuse it's not respecting the allowed folders requirement: [{}]", filepath, isIndexable);        

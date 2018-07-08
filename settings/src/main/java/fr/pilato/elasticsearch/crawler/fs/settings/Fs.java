@@ -32,7 +32,9 @@ public class Fs {
     private TimeValue updateRate = TimeValue.timeValueMinutes(15);
     private List<String> includes = null;
     private List<String> excludes = null;
-    private List<String> allowedFolders = null;
+    private String allowedRootFolder;
+    private List<String> allowedBaseFolders = null;
+    private List<String> allowedSubFolders = null;
     private boolean jsonSupport = false;
     private boolean filenameAsId = false;
     private boolean addFilesize = true;
@@ -64,7 +66,9 @@ public class Fs {
         private TimeValue updateRate = TimeValue.timeValueMinutes(15);
         private List<String> includes = null;
         private List<String> excludes = null;
-        private List<String> allowedFolders = null;
+        private String allowedRootFolder;
+        private List<String> allowedBaseFolders = null;
+        private List<String> allowedSubFolders = null;
         private boolean jsonSupport = false;
         private boolean filenameAsId = false;
         private boolean addFilesize = true;
@@ -129,19 +133,42 @@ public class Fs {
             return this;
         }
 
-        public Builder setAllowedFolders(List<String> allowedFolders) {
-            this.allowedFolders = allowedFolders;
+        public Builder setAllowedRootFolder(String allowedRootFolder) {
+            this.allowedRootFolder = allowedRootFolder;
             return this;
         }
 
-        public Builder addAllowedFolder(String allowedFolder) {
-            if (this.allowedFolders == null) {
-                this.allowedFolders = new ArrayList<>();
+        public Builder setAllowedBaseFolders(List<String> allowedBaseFolders) {
+            this.allowedBaseFolders = allowedBaseFolders;
+            return this;
+        }
+
+        public Builder addAllowedBaseFolder(String allowedBaseFolder) {
+            if (this.allowedBaseFolders == null) {
+                this.allowedBaseFolders = new ArrayList<>();
             }
 
             // We refuse to add duplicates
-            if (!this.allowedFolders.contains(allowedFolder)) {
-                this.allowedFolders.add(allowedFolder);
+            if (!this.allowedBaseFolders.contains(allowedBaseFolder)) {
+                this.allowedBaseFolders.add(allowedBaseFolder);
+            }
+
+            return this;
+        }
+
+        public Builder setAllowedSubFolders(List<String> allowedSubFolders) {
+            this.allowedSubFolders = allowedSubFolders;
+            return this;
+        }
+
+        public Builder addAllowedSubFolder(String allowedSubFolder) {
+            if (this.allowedSubFolders == null) {
+                this.allowedSubFolders = new ArrayList<>();
+            }
+
+            // We refuse to add duplicates
+            if (!this.allowedSubFolders.contains(allowedSubFolder)) {
+                this.allowedSubFolders.add(allowedSubFolder);
             }
 
             return this;
@@ -235,7 +262,7 @@ public class Fs {
         public Fs build() {
             return new Fs(url, updateRate, includes, excludes, jsonSupport, filenameAsId, addFilesize,
                     removeDeleted, addAsInnerObject, storeSource, indexedChars, indexContent, attributesSupport, rawMetadata,
-                    checksum, xmlSupport, indexFolders, langDetect, continueOnError, pdfOcr, ocr, allowedFolders);
+                    checksum, xmlSupport, indexFolders, langDetect, continueOnError, pdfOcr, ocr, allowedBaseFolders, allowedSubFolders, allowedRootFolder);
         }
     }
 
@@ -246,10 +273,12 @@ public class Fs {
     private Fs(String url, TimeValue updateRate, List<String> includes, List<String> excludes, boolean jsonSupport,
                boolean filenameAsId, boolean addFilesize, boolean removeDeleted, boolean addAsInnerObject, boolean storeSource,
                Percentage indexedChars, boolean indexContent, boolean attributesSupport, boolean rawMetadata, String checksum, boolean xmlSupport,
-               boolean indexFolders, boolean langDetect, boolean continueOnError, boolean pdfOcr, Ocr ocr, List<String> allowedFolders) {
+               boolean indexFolders, boolean langDetect, boolean continueOnError, boolean pdfOcr, Ocr ocr, List<String> allowedBaseFolders, List<String> allowedSubFolders, String allowedRootFolder) {
         this.url = url;
         this.updateRate = updateRate;
-        this.allowedFolders = allowedFolders;
+        this.allowedRootFolder = allowedRootFolder;
+        this.allowedBaseFolders = allowedBaseFolders;
+        this.allowedSubFolders = allowedSubFolders;
         this.includes = includes;
         this.excludes = excludes;
         this.jsonSupport = jsonSupport;
@@ -287,12 +316,28 @@ public class Fs {
         this.updateRate = updateRate;
     }
 
-    public List<String> getAllowedFolders() {
-        return allowedFolders;
+    public String getAllowedRootFolder() {
+        return allowedRootFolder;
     }
 
-    public void setAllowedFolders(List<String> allowedFolders) {
-        this.allowedFolders = allowedFolders;
+    public void setAllowedRootFolder(String allowedRootFolder) {
+        this.allowedRootFolder = allowedRootFolder;
+    }
+
+    public List<String> getAllowedBaseFolders() {
+        return allowedBaseFolders;
+    }
+
+    public void setAllowedBaseFolders(List<String> allowedBaseFolders) {
+        this.allowedBaseFolders = allowedBaseFolders;
+    }
+
+    public List<String> getAllowedSubFolders() {
+        return allowedSubFolders;
+    }
+
+    public void setAllowedSubFolders(List<String> allowedSubFolders) {
+        this.allowedSubFolders = allowedSubFolders;
     }
 
     public List<String> getIncludes() {
@@ -472,7 +517,9 @@ public class Fs {
         if (updateRate != null ? !updateRate.equals(fs.updateRate) : fs.updateRate != null) return false;
         if (includes != null ? !includes.equals(fs.includes) : fs.includes != null) return false;
         if (excludes != null ? !excludes.equals(fs.excludes) : fs.excludes != null) return false;
-        if (allowedFolders != null ? !allowedFolders.equals(fs.allowedFolders) : fs.allowedFolders != null) return false;
+        if (allowedRootFolder != null ? !allowedRootFolder.equals(fs.allowedRootFolder) : fs.allowedRootFolder != null) return false;
+        if (allowedBaseFolders != null ? !allowedBaseFolders.equals(fs.allowedBaseFolders) : fs.allowedBaseFolders != null) return false;
+        if (allowedSubFolders != null ? !allowedSubFolders.equals(fs.allowedSubFolders) : fs.allowedSubFolders != null) return false;
         if (indexedChars != null ? !indexedChars.equals(fs.indexedChars) : fs.indexedChars != null) return false;
         return checksum != null ? checksum.equals(fs.checksum) : fs.checksum == null;
 
@@ -484,7 +531,9 @@ public class Fs {
         result = 31 * result + (updateRate != null ? updateRate.hashCode() : 0);
         result = 31 * result + (includes != null ? includes.hashCode() : 0);
         result = 31 * result + (excludes != null ? excludes.hashCode() : 0);
-        result = 31 * result + (allowedFolders != null ? allowedFolders.hashCode() : 0);
+        result = 31 * result + (allowedRootFolder != null ? allowedRootFolder.hashCode() : 0);
+        result = 31 * result + (allowedBaseFolders != null ? allowedBaseFolders.hashCode() : 0);
+        result = 31 * result + (allowedSubFolders != null ? allowedSubFolders.hashCode() : 0);
         result = 31 * result + (jsonSupport ? 1 : 0);
         result = 31 * result + (filenameAsId ? 1 : 0);
         result = 31 * result + (addFilesize ? 1 : 0);

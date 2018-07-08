@@ -120,27 +120,50 @@ public class FsCrawlerUtil {
 
     /**
     * This is used to see if the file is contained in the allowed folders
+    * rootFolder is the common folder path for all files, in our case is /bundles/documents
+    * baseFolders are folders like /3000/, /jk/, /kj/, etc
     */
-    public static boolean isInAllowedFolder(String filePath, List<String> folders) {
-        logger.debug("EXECUTING isInAllowedFolder filePath = [{}], folders = [{}]", filePath, folders);
+    public static boolean isInAllowedFolder(String filePath, String rootFolder, List<String> baseFolders, List<String> subFolders) {
+        logger.debug("IS IN ALLOWED FOLDER: START PARAMS filePath = [{}], rootFolder={}, baseFolders=[{}], subFolders = [{}], ", filePath, rootFolder, baseFolders, subFolders);
 
-        if (folders == null)
+        if (baseFolders == null)
         {
-            logger.trace("isInAllowedFolder: no folders filter passed");    
+            logger.trace("IS IN ALLOWED FOLDER: no baseFolders filter passed");    
             return true;
         }
-        else if (folders == null){
-            logger.trace("isInAllowedFolder: no folders filter passed (0 length)");    
-            return true;
+
+        String cleanedPath = filePath.toLowerCase();
+        if (rootFolder != null){
+            cleanedPath = filePath.replace(rootFolder.toLowerCase(),"");
+            logger.trace("IS IN ALLOWED FOLDER: cleaned path = {}", cleanedPath);
         }
-        for (String folder : folders) {
-            if (filePath.toLowerCase().contains(folder.toLowerCase())) {
-                logger.trace("allowed folder is included in filepath");
-                return true;
+
+        boolean pathContainsAlloweBaseFolder = false;
+
+        for (String baseFolder : baseFolders) {
+            if (cleanedPath.contains(baseFolder.toLowerCase())) {
+                logger.trace("IS IN ALLOWED FOLDER: ALL OK: allowed baseFolder is included in filepath");
+                pathContainsAlloweBaseFolder = true;
+                break;
             }
         }
-        logger.trace("file path doesn't contain any allowed folder");
-        return false;
+
+        if (pathContainsAlloweBaseFolder == false){
+            logger.trace("IS IN ALLOWED FOLDER: FAIL: file path doesn't contain any allowed base folder");
+            return false;
+        }
+
+        if (subFolders != null)
+        {
+            for (String subFolder : subFolders) {
+                if (cleanedPath.contains(subFolder.toLowerCase())) {
+                    logger.trace("IS IN ALLOWED FOLDER: ALL OK: allowed subFolder is included in filepath");
+                    return true;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
