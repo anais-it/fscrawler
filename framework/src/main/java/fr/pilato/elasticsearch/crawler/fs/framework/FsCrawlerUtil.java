@@ -135,6 +135,7 @@ public class FsCrawlerUtil {
         String cleanedPath = filePath.toLowerCase();
         if (rootFolder != null){
             cleanedPath = filePath.replace(rootFolder.toLowerCase(),"");
+            cleanedPath = cleanedPath.toLowerCase();
             logger.trace("IS IN ALLOWED FOLDER: cleaned path = {}", cleanedPath);
             if(cleanedPath.length() == 0)
             {
@@ -142,28 +143,38 @@ public class FsCrawlerUtil {
             }
         }
 
-        boolean pathContainsAlloweBaseFolder = false;
+        boolean pathContainsAllowedBaseFolder = false;
 
         for (String baseFolder : baseFolders) {
             if (cleanedPath.contains(baseFolder.toLowerCase())) {
                 logger.trace("IS IN ALLOWED FOLDER: ALL OK: allowed baseFolder is included in filepath");
-                pathContainsAlloweBaseFolder = true;
+                pathContainsAllowedBaseFolder = true;
                 break;
             }
         }
 
-        if (pathContainsAlloweBaseFolder == false){
+        if (pathContainsAllowedBaseFolder == false){
             logger.trace("IS IN ALLOWED FOLDER: FAIL: file path doesn't contain any allowed base folder");
             return false;
         }
 
         if (subFolders != null)
         {
+            boolean pathContainsAllowedSubFolder = false;
             for (String subFolder : subFolders) {
                 if (cleanedPath.contains(subFolder.toLowerCase())) {
                     logger.trace("IS IN ALLOWED FOLDER: ALL OK: allowed subFolder is included in filepath");
-                    return true;
+                    pathContainsAllowedSubFolder = true;
+                    break;
                 }
+            }
+            if (pathContainsAllowedSubFolder == true)
+            {
+                return true;
+            }
+            else{
+                logger.trace("IS IN ALLOWED FOLDER: FAIL: filepath={}, doesn't contain any allowed subfolders", cleanedPath);
+                return false;
             }
         }
 
