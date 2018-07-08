@@ -250,8 +250,9 @@ public abstract class FsParser implements Runnable {
                     isIndexable = true;
                 }
 
-                if (isIndexable)
+                if (!child.directory && isIndexable)
                 {
+                    // check if is in allowed folder only if it's not a folder
                     boolean isInAllowedFolder = isInAllowedFolder(filepath, fsSettings.getFs().getAllowedRootFolder(), fsSettings.getFs().getAllowedBaseFolders(), fsSettings.getFs().getAllowedSubFolders());
                     if (!isInAllowedFolder){
                         isIndexable = false;
