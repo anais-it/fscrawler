@@ -146,7 +146,7 @@ public class FsCrawlerUtil {
         boolean pathContainsAllowedBaseFolder = false;
 
         for (String baseFolder : baseFolders) {
-            if (cleanedPath.contains(baseFolder.toLowerCase())) {
+            if (cleanedPath.startsWith(baseFolder.toLowerCase())) {
                 logger.trace("IS IN ALLOWED FOLDER: ALL OK: allowed baseFolder is included in filepath");
                 pathContainsAllowedBaseFolder = true;
                 break;
