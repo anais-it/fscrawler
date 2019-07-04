@@ -124,7 +124,7 @@ public class FsCrawlerUtil {
     * baseFolders are folders like /3000/, /jk/, /kj/, etc
     */
     public static boolean isInAllowedFolder(String filePath, String rootFolder, List<String> baseFolders, List<String> subFolders) {
-        logger.debug("IS IN ALLOWED FOLDER: START PARAMS filePath = [{}], rootFolder={}, baseFolders=[{}], subFolders = [{}], ", filePath, rootFolder, baseFolders, subFolders);
+        logger.debug("IS IN ALLOWED FOLDER DRAGOS: START PARAMS filePath = [{}], rootFolder={}, baseFolders=[{}], subFolders = [{}], ", filePath, rootFolder, baseFolders, subFolders);
 
         if (baseFolders == null)
         {
